@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         if (existingUser) {
             return NextResponse.json(
                 { error: "Email já está em uso." },
-                { status: 400 }
+                { status: 409 }
             );
         }
 
