@@ -53,8 +53,36 @@ export interface Task {
     updatedAt: string
 }
 
+export interface Pagination {
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+    hasNext: boolean
+    hasPrev: boolean
+}
+
+export interface TasksResponse {
+    tasks: Task[]
+    pagination: Pagination
+}
+
+export interface TaskListParams {
+    page?: number
+    limit?: number
+    status?: string
+}
+
 export const tasksApi = {
-    list: () => apiRequest<{ tasks: Task[] }>('/tasks'),
+    list: (params?: TaskListParams) => {
+        const searchParams = new URLSearchParams()
+        if (params?.page) searchParams.set('page', params.page.toString())
+        if (params?.limit) searchParams.set('limit', params.limit.toString())
+        if (params?.status) searchParams.set('status', params.status)
+
+        const query = searchParams.toString()
+        return apiRequest<TasksResponse>(`/tasks${query ? `?${query}` : ''}`)
+    },
 
     create: (data: { title: string; description?: string; status?: string }) =>
         apiRequest<{ task: Task }>('/tasks', {
