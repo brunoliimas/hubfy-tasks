@@ -6,7 +6,6 @@ interface RouteParams {
     params: Promise<{ id: string }>;
 }
 
-// PUT - Atualizar uma tarefa existente do usuario autenticado
 export async function PUT(request: NextRequest, { params }: RouteParams) {
     const user = getAuthUser(request);
 
@@ -48,7 +47,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         const body = await request.json();
         const { title, description, status } = body;
 
-        const validStatus = ["pending", "in-progress", "completed"];
+        const validStatus = ["pending", "in_progress", "completed"];
         if (status && !validStatus.includes(status)) {
             return NextResponse.json(
                 { message: "Status inválido" },
@@ -73,7 +72,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         );
     }
 }
-// DELETE - Deletar uma tarefa existente do usuario autenticado
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const user = getAuthUser(request);

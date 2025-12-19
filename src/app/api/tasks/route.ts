@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/middleware";
 
-
-// GET - Listar tarefas do usuario autenticado
 export async function GET(request: NextRequest) {
     const user = getAuthUser(request);
 
@@ -21,7 +19,7 @@ export async function GET(request: NextRequest) {
         });
 
         return NextResponse.json(
-            tasks,
+            { tasks },
             { status: 200 }
         );
     } catch (error) {
@@ -33,8 +31,6 @@ export async function GET(request: NextRequest) {
     }
 }
 
-
-// POST - Criar uma nova tarefa para o usuario autenticado
 export async function POST(request: NextRequest) {
     const user = getAuthUser(request);
 
@@ -56,7 +52,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const validStatus = ["pending", "in-progress", "completed"];
+        const validStatus = ["pending", "in_progress", "completed"];
         if (status && !validStatus.includes(status)) {
             return NextResponse.json(
                 { message: "Status inválido" },
