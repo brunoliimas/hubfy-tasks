@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { authApi } from '@/lib/api'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function RegisterPage() {
     const [name, setName] = useState('')
@@ -13,7 +14,9 @@ export default function RegisterPage() {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [error, setError] = useState('')
     const [isLoading, setIsLoading] = useState(false)
+    
     const router = useRouter()
+    const { token, isLoading: authLoading } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -39,6 +42,22 @@ export default function RegisterPage() {
         } finally {
             setIsLoading(false)
         }
+    }
+
+    useEffect(() => {
+        if (authLoading) return;
+        if (token) {
+            router.replace('/dashboard');
+        }
+    }, [token, authLoading, router]);
+
+
+    if (authLoading || token) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-ui-blue"></div>
+            </div>
+        )
     }
 
     return (

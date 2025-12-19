@@ -19,7 +19,7 @@ export default function TaskFilter({ currentFilter, onFilterChange }: TaskFilter
                 <button
                     key={filter.value}
                     onClick={() => onFilterChange(filter.value)}
-                    className={`${currentFilter === filter.value ? 'btn-primary' : 'btn-secondary'} text-xs`}
+                    className={`${currentFilter === filter.value ? 'btn-filter-primary' : 'btn-filter-secondary'}`}
                 >
                     {filter.label}
                 </button>

@@ -1,17 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { authApi } from '@/lib/api'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [isLoading, setIsLoading] = useState(false)
-    const { login } = useAuth()
+
+    const { login, token, isLoading: authLoading } = useAuth();
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -26,6 +29,23 @@ export default function LoginPage() {
         } finally {
             setIsLoading(false)
         }
+    }
+
+
+    useEffect(() => {
+        if (authLoading) return;
+        if (token) {
+            router.replace('/dashboard');
+        }
+    }, [token, authLoading, router]);
+
+
+    if (authLoading || token) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-ui-blue"></div>
+            </div>
+        )
     }
 
     return (
