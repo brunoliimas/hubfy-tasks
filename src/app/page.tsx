@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 
 export default function HomePage() {
-  const { token, isLoading } = useAuth()
   const router = useRouter()
+  const { token, isLoading } = useAuth()
 
   useEffect(() => {
-    if (isLoading) return // Espera hidratar
+    if (isLoading) return
 
     if (token) {
       router.push('/dashboard')
@@ -20,7 +20,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
+      <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary-ui-blue border-r-transparent"></div>
     </div>
   )
 }
