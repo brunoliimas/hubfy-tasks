@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import {prisma} from "@/lib/prisma";
-import {getAuthUser} from "@/lib/middleware";
+import { prisma } from "@/lib/prisma";
+import { getAuthUser } from "@/lib/middleware";
+import { updateTaskSchema } from "@/lib/validations";
 
 interface RouteParams {
     params: Promise<{ id: string }>;
@@ -30,12 +31,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             where: { id: taskId },
         });
 
-        if (!existingTask){ 
+        if (!existingTask) {
             return NextResponse.json(
                 { message: "Tarefa não encontrada" },
                 { status: 404 }
             );
-        }   
+        }
 
         if (existingTask.userId !== user.id) {
             return NextResponse.json(
@@ -45,29 +46,33 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
 
         const body = await request.json();
-        const { title, description, status } = body;
 
-        const validStatus = ["pending", "in_progress", "completed"];
-        if (status && !validStatus.includes(status)) {
+        // Validação com Zod
+        const result = updateTaskSchema.safeParse(body);
+        if (!result.success) {
+            const firstError = result.error.issues[0];
             return NextResponse.json(
-                { message: "Status inválido" },
+                { message: firstError.message },
                 { status: 400 }
             );
         }
+
+        const { title, description, status } = result.data;
 
         const task = await prisma.task.update({
             where: { id: taskId },
             data: {
                 ...(title && { title }),
-                ... (description !== undefined && { description }),
-                ... (status && { status }),
+                ...(description !== undefined && { description }),
+                ...(status && { status }),
             },
         });
-        return NextResponse.json({task}, { status: 200 });
+
+        return NextResponse.json({ task }, { status: 200 });
     } catch (error) {
         console.error("Erro ao atualizar tarefa:", error);
         return NextResponse.json(
-            { message: "Erro interno do servdor" },
+            { message: "Erro interno do servidor" },
             { status: 500 }
         );
     }
@@ -91,17 +96,18 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
                 { message: "ID de tarefa inválido" },
                 { status: 400 }
             );
-        }   
+        }
+
         const existingTask = await prisma.task.findUnique({
             where: { id: taskId },
         });
 
-        if (!existingTask){ 
+        if (!existingTask) {
             return NextResponse.json(
                 { message: "Tarefa não encontrada" },
                 { status: 404 }
             );
-        }   
+        }
 
         if (existingTask.userId !== user.id) {
             return NextResponse.json(
@@ -121,7 +127,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     } catch (error) {
         console.error("Erro ao deletar tarefa:", error);
         return NextResponse.json(
-            { message: "Erro interno do servdor" },
+            { message: "Erro interno do servidor" },
             { status: 500 }
         );
     }

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* 01. Color Palette */
   /* Primary Colors */
@@ -74,7 +76,40 @@
 
 /* Global Styles */
 body {
-  @apply bg-bg-main text-primary-gray-text;
+  @apply bg-bg-main text-primary-gray-text transition-colors duration-300;
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --color-primary-ui-blue: #4A90D9;
+  --color-secondary-ui-blue: #5BA3E0;
+  --color-primary-gray-text: #E0E0E0;
+  --color-primary-white: #1A1A2E;
+
+  --color-supporting-header-blue: #0F0F1A;
+  --color-supporting-secondary-blue: #5BA3E0;
+  --color-supporting-secondary-light: #7EC8F7;
+  --color-supporting-border-gray: #3D3D5C;
+  --color-supporting-background: #252542;
+  --color-supporting-border-line: #3D3D5C;
+
+  --color-label: #F0F0F0;
+  --color-value: #A0A0A0;
+  --color-label-disabled: #707070;
+  --color-value-disabled: #505050;
+
+  --color-hover-blue: #6BA8E5;
+  --color-hover-green: #00D9A8;
+  --color-hover-red: #FF5A67;
+
+  --color-bg-main: #0F0F1A;
+  --color-bg-card: #1A1A2E;
+  --color-bg-hover: #252542;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 4px 12px rgba(74, 144, 217, 0.2), 0 2px 6px rgba(74, 144, 217, 0.15);
+  --shadow-button: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-input-focus: 0 0 0 3px rgba(91, 163, 224, 0.25);
 }
 
 /* Utilitários personalizados */
@@ -87,7 +122,7 @@ body {
   }
 
   .btn-secondary {
-    @apply bg-white text-primary-ui-blue border border-primary-ui-blue cursor-pointer px-6 py-2.5
+    @apply bg-white dark:bg-bg-card text-primary-ui-blue border border-primary-ui-blue cursor-pointer px-6 py-2.5
            rounded-btn font-bold hover:bg-supporting-background active:scale-[0.98]
            transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
   }
@@ -104,7 +139,7 @@ body {
            disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 text-xs;
   }
   .btn-filter-secondary {
-    @apply bg-white text-primary-ui-blue border border-primary-ui-blue cursor-pointer px-4 py-2
+    @apply bg-white dark:bg-bg-card text-primary-ui-blue border border-primary-ui-blue cursor-pointer px-4 py-2
            rounded-btn hover:bg-supporting-background active:scale-[0.98]
            transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-xs;
   }
@@ -126,24 +161,24 @@ body {
 
   /* Cards */
   .card {
-    @apply bg-bg-card rounded-card shadow-card p-6 transition-shadow duration-200 hover:shadow-card-hover;
+    @apply bg-bg-card rounded-card shadow-card p-6 transition-all duration-300 hover:shadow-card-hover;
   }
 
   .card-compact {
-    @apply bg-bg-card rounded-card shadow-card p-4 transition-shadow duration-200 hover:shadow-card-hover;
+    @apply bg-bg-card rounded-card shadow-card p-4 transition-all duration-300 hover:shadow-card-hover;
   }
 
   /* Inputs */
   .input {
     @apply w-full px-4 py-2.5 border border-supporting-border-gray rounded-input
-           bg-white text-label placeholder:text-value-disabled
+           bg-white dark:bg-bg-hover text-label placeholder:text-value-disabled
            focus:outline-none focus:border-supporting-secondary-blue focus:shadow-input-focus
            transition-all duration-200 disabled:bg-supporting-background disabled:cursor-not-allowed;
   }
 
   .textarea {
     @apply w-full px-4 py-2.5 border border-supporting-border-gray rounded-input
-           bg-white text-label placeholder:text-value-disabled
+           bg-white dark:bg-bg-hover text-label placeholder:text-value-disabled
            focus:outline-none focus:border-supporting-secondary-blue focus:shadow-input-focus
            transition-all duration-200 disabled:bg-supporting-background disabled:cursor-not-allowed
            resize-none;
@@ -151,7 +186,7 @@ body {
 
   .select {
     @apply w-full px-4 py-2.5 border border-supporting-border-gray rounded-input
-           bg-white text-label placeholder:text-value-disabled
+           bg-white dark:bg-bg-hover text-label placeholder:text-value-disabled
            focus:outline-none focus:border-supporting-secondary-blue focus:shadow-input-focus
            transition-all duration-200 disabled:bg-supporting-background disabled:cursor-not-allowed
            cursor-pointer;
@@ -174,7 +209,7 @@ body {
 
   .badge-in-progress {
     @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold transition-colors
-           bg-indication-orange/10 text-orange-700 border border-indication-orange/20;
+           bg-indication-orange/10 text-orange-700 dark:text-indication-orange border border-indication-orange/20;
   }
 
   .badge-completed {
@@ -213,10 +248,18 @@ body {
 
   /* Auth Pages Container */
   .auth-container {
-    @apply min-h-screen flex items-center justify-center bg-gradient-to-br from-supporting-background via-bg-main to-supporting-secondary-light/10 px-4;
+    @apply min-h-screen flex items-center justify-center bg-gradient-to-br from-supporting-background via-bg-main to-supporting-secondary-light/10 px-4 transition-colors duration-300;
   }
 
   .auth-card {
-    @apply max-w-md w-full flex flex-col gap-6 bg-bg-card rounded-card shadow-card-hover p-8;
+    @apply max-w-md w-full flex flex-col gap-6 bg-bg-card rounded-card shadow-card-hover p-8 transition-colors duration-300;
+  }
+
+  /* Theme Toggle Button */
+  .btn-theme {
+    @apply p-2 rounded-lg transition-all duration-200 cursor-pointer
+           bg-supporting-background hover:bg-supporting-border-gray
+           dark:bg-bg-hover dark:hover:bg-supporting-border-gray
+           text-primary-gray-text;
   }
 }

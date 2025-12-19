@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/middleware";
+import { createTaskSchema } from "@/lib/validations";
 
 export async function GET(request: NextRequest) {
     const user = getAuthUser(request);
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error("Erro ao listar tarefas:", error);
         return NextResponse.json(
-            { message: "Erro interno do servdor" },
+            { message: "Erro interno do servidor" },
             { status: 500 }
         );
     }
@@ -43,31 +44,28 @@ export async function POST(request: NextRequest) {
 
     try {
         const body = await request.json();
-        const { title, description, status } = body;
 
-        if (!title) {
+        // Validação com Zod
+        const result = createTaskSchema.safeParse(body);
+        if (!result.success) {
+            const firstError = result.error.issues[0];
             return NextResponse.json(
-                { message: "O título é obrigatório" },
+                { message: firstError.message },
                 { status: 400 }
             );
         }
 
-        const validStatus = ["pending", "in_progress", "completed"];
-        if (status && !validStatus.includes(status)) {
-            return NextResponse.json(
-                { message: "Status inválido" },
-                { status: 400 }
-            );
-        }
+        const { title, description, status } = result.data;
 
         const task = await prisma.task.create({
             data: {
                 title,
                 description: description || null,
-                status: status || "pending",
+                status,
                 userId: user.id,
             },
-        })
+        });
+
         return NextResponse.json(
             { task },
             { status: 201 }
@@ -79,4 +77,4 @@ export async function POST(request: NextRequest) {
             { status: 500 }
         );
     }
-}   
+}

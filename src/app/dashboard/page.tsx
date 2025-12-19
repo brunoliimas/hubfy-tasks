@@ -7,6 +7,7 @@ import { tasksApi, Task } from '@/lib/api'
 import TaskCard from '@/components/TaskCard'
 import TaskForm from '@/components/TaskForm'
 import TaskFilter from '@/components/TaskFilter'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export default function DashboardPage() {
     const { user, isLoading: isAuthLoading, logout } = useAuth()
@@ -98,12 +99,15 @@ export default function DashboardPage() {
                         <h1 className="text-xl font-bold text-label">Hubfy Tasks</h1>
                         <p className="text-sm text-value">Olá, {user?.name}</p>
                     </div>
-                    <button
-                        onClick={logout}
-                        className="px-4 py-2 text-sm text-value hover:text-label hover:bg-supporting-background rounded-btn transition-colors cursor-pointer"
-                    >
-                        Sair
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <ThemeToggle />
+                        <button
+                            onClick={logout}
+                            className="px-4 py-2 text-sm text-value hover:text-label hover:bg-supporting-background rounded-btn transition-colors cursor-pointer"
+                        >
+                            Sair
+                        </button>
+                    </div>
                 </div>
             </header>
 

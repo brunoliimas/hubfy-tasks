@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hashPassword } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { registerSchema } from "@/lib/validations";
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
+
+        // Validacao ZOD
+        const result = registerSchema.safeParse(body);
+        if (!result.success) {
+            const firstError = result.error.issues[0];
+            return NextResponse.json(
+                { error: firstError.message },
+                { status: 400 }
+            );
+        }
+
         const { name, email, password } = body;
 
         if (!name || !email || !password) {
