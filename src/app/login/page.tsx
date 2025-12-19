@@ -6,6 +6,8 @@ import { authApi } from '@/lib/api'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { Logo } from '@/components/Logo'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -49,74 +51,78 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="auth-container">
-            <div className="auth-card">
+        <>
+            <header className="absolute top-0 left-0 w-full px-8 py-6 flex justify-end">
+                <ThemeToggle />
+            </header>
+            <div className="auth-container">
+                <div className="auth-card">
 
-                <div className='w-full flex justify-center items-center'>
-                    <Image
-                        src="/hubfy-tasks.svg"
-                        alt="Hubfy Tasks Logo"
-                        width={100}
-                        height={100}
-                    />
-                </div>
-                <h1 className="text-2xl font-bold text-center text-label">
-                    Faça login na sua conta
-                </h1>
+                    <div className='w-full flex justify-center items-center'>
+                        <Logo
+                            width={150}
+                            height={100}
+                            className="text-primary-ui-blue"
+                        />
+                    </div>
+                    <h1 className="text-2xl font-bold text-center text-label">
+                        Faça login na sua conta
+                    </h1>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {error && (
-                        <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
-                            {error}
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {error && (
+                            <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
+                                {error}
+                            </div>
+                        )}
+
+                        <div>
+                            <label htmlFor="email" className="label">
+                                Email
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                className="input"
+                                placeholder="seu@email.com"
+                            />
                         </div>
-                    )}
 
-                    <div>
-                        <label htmlFor="email" className="label">
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="input"
-                            placeholder="seu@email.com"
-                        />
-                    </div>
+                        <div>
+                            <label htmlFor="password" className="label">
+                                Senha
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className="input"
+                                placeholder="••••••••"
+                            />
+                        </div>
 
-                    <div>
-                        <label htmlFor="password" className="label">
-                            Senha
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="input"
-                            placeholder="••••••••"
-                        />
-                    </div>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full btn-primary"
+                        >
+                            {isLoading ? 'Entrando...' : 'Entrar'}
+                        </button>
+                    </form>
 
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full btn-primary"
-                    >
-                        {isLoading ? 'Entrando...' : 'Entrar'}
-                    </button>
-                </form>
-
-                <p className="text-center text-sm text-value">
-                    Não tem uma conta?{' '}
-                    <Link href="/register" className="text-primary-ui-blue hover:underline font-semibold">
-                        Cadastre-se
-                    </Link>
-                </p>
+                    <p className="text-center text-sm text-value">
+                        Não tem uma conta?{' '}
+                        <Link href="/register" className="text-primary-ui-blue hover:underline font-semibold">
+                            Cadastre-se
+                        </Link>
+                    </p>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
